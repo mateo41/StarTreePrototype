@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/BChtc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/BChtf.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/BChtj.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/BChtj4jdk11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/BChtj4swing111.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/BChtjsrc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/stc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/stc_r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/stf.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/stj.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/stj4jdk11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/stj4swing111.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/stjmin.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/stz.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/jars/stz_r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MATT/Desktop/StarTree/STARTREE3_1/stj3[1].1.0.10b/inxight/stj/samples/STSelectableLinks/STSelectableLinks.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
