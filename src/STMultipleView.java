@@ -264,8 +264,8 @@ public class STMultipleView extends JFrame implements PropertyChangeListener {
         try {
         	
             star.setLicense(null,
-                    base_dir + "./res/license/license.dat",
-                    base_dir + "./res/license/company.dat");
+                    base_dir + "/res/license/license.dat",
+                    base_dir + "/res/license/company.dat");
         } catch (STLicenseException e) {
             setMessage("Invalid license.");
         }
@@ -298,7 +298,7 @@ public class STMultipleView extends JFrame implements PropertyChangeListener {
                     STMultipleViewPanel.this, "viewNewSubtree"));
             setNodePopup(popup);
             
-            //StdGraphDataModel model = this.sta
+ 
             
         }
 
@@ -357,17 +357,7 @@ public class STMultipleView extends JFrame implements PropertyChangeListener {
             filename = args[0];
         StdTreeDataModel model1 = new StdTreeDataModel();
         final TreeDataModel tree = loadData(filename, model1);
-        //StdTreeDataModel model1 = (StdTreeDataModel)tree;
-        
-        /*
-		Enumeration e =  model1.getNodes();
-        while (e.hasMoreElements()){
-        	StdTreeDataNode node = (StdTreeDataNode)e.nextElement();
-        	System.out.println(node.toString());
-        	String nodeid = model1.getNodeID(node);
-        	System.out.println(nodeid);
-        }
-        */
+
         
 
         // ensure AWT thread safety by using invokeLater
@@ -393,6 +383,7 @@ class TreeDragSource implements DragSourceListener, DragGestureListener {
     TransferableTreeNode transferable;
 
     StdTreeDataNode oldNode;
+    StdTreeDataNode parentNode;
     
     JTree sourceTree;
 
@@ -416,10 +407,10 @@ class TreeDragSource implements DragSourceListener, DragGestureListener {
 
       //oldNode = new DefaultMutableTreeNode();
       oldNode = (StdTreeDataNode) path.getLastPathComponent();
-      
+      parentNode = (StdTreeDataNode) path.getPathComponent(0);
       
       transferable = new TransferableTreeNode(oldNode.toString());
-      //transferable = new TransferableTreeNode(path.toString());
+      
       source.startDrag(dge, DragSource.DefaultMoveNoDrop, transferable, this);
 
       // If you support dropping the node anywhere, you should probably
@@ -455,9 +446,9 @@ class TreeDragSource implements DragSourceListener, DragGestureListener {
           && (dsde.getDropAction() == DnDConstants.ACTION_MOVE)) {
     	  StdTreeDataModel model = (StdTreeDataModel) sourceTree.getModel();
     	  //oldNode.removeFromParent();
-    	 
+    	  //parentNode.remove(oldNode);
     	  //model.removeNode(oldNode);
-            
+           
       }
 
       /*
@@ -551,7 +542,7 @@ class TreeDropTarget implements DropTargetListener {
 	  			current_node = iter.nextElement();
 	  			System.out.println(current_node.toString());
 	        }
-	          
+	          model.removeNode(current_node);
 	          model.insertChildAt(parent,current_node,0);
 	          //model.insertNodeInto(node, parent, 0);
 	          dtde.dropComplete(true);
