@@ -185,7 +185,7 @@ public class STMultipleView extends JFrame implements PropertyChangeListener {
             stPanel2.removePropertyChangeListener(this);
         jTree = new JTree(tree);
         ds = new TreeDragSource(jTree, DnDConstants.ACTION_MOVE);
-        //ds = new TreeDragSource(tree, DnDConstants.ACTION_COPY_OR_MOVE);
+
         dt = new TreeDropTarget(jTree);
        
         jTree.addPropertyChangeListener(this);
@@ -383,7 +383,7 @@ class TreeDragSource implements DragSourceListener, DragGestureListener {
     TransferableTreeNode transferable;
 
     StdTreeDataNode oldNode;
-    StdTreeDataNode parentNode;
+
     
     JTree sourceTree;
 
@@ -403,11 +403,8 @@ class TreeDragSource implements DragSourceListener, DragGestureListener {
         // We can't move the root node or an empty selection
         return;
       }
-
-
-      //oldNode = new DefaultMutableTreeNode();
       oldNode = (StdTreeDataNode) path.getLastPathComponent();
-      parentNode = (StdTreeDataNode) path.getPathComponent(0);
+      
       
       transferable = new TransferableTreeNode(oldNode.toString());
       
@@ -534,7 +531,7 @@ class TreeDropTarget implements DropTargetListener {
 	          /*I don't know a better way to look up the node in the model. 
 	           * So I must look at all nodes.
 	           */
-	        //StdTreeDataNode correct_node = null;
+	        
 	        StdTreeDataNode current_node = null;
 	  		Enumeration<StdTreeDataNode> iter =  model.getNodes();
 	  		current_node = iter.nextElement();
@@ -544,7 +541,7 @@ class TreeDropTarget implements DropTargetListener {
 	        }
 	          model.removeNode(current_node);
 	          model.insertChildAt(parent,current_node,0);
-	          //model.insertNodeInto(node, parent, 0);
+	          
 	          dtde.dropComplete(true);
 	          return;
 	        }
@@ -562,15 +559,9 @@ class TransferableTreeNode implements Transferable {
 	      "Tree Path");
 
 	  DataFlavor flavors[] = { TREE_PATH_FLAVOR };
-
-	  //TreePath path;
-	  String path;
 	  
-	  /*
-	  public TransferableTreeNode(TreePath tp) {
-	    path = tp;
-	  }
-	  */
+	  String path;
+	 
 	  
 	  public TransferableTreeNode(String s){
 		  path = s;
