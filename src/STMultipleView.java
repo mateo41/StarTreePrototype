@@ -8,7 +8,8 @@ import com.inxight.st.*;
 import com.inxight.st.io.stc.STCReader;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -32,6 +33,13 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -53,7 +61,7 @@ import java.util.Enumeration;
  * menu.  This can be done either within the existing window, or in a new
  * window, demonstrating another way multiple views can be created.
  */
-public class STMultipleView extends JFrame implements PropertyChangeListener {
+public class STMultipleView extends JFrame implements ActionListener, PropertyChangeListener {
 
     private JMenuItem miSplitVert, miSplitHoriz, miSplitJTree, miUnsplit;
     private Container main_pane;
@@ -63,9 +71,9 @@ public class STMultipleView extends JFrame implements PropertyChangeListener {
     private StarTree star1, star2;
     private TreeDataModel tree;
     private JTextField msg_text_field;
-    TreeDragSource ds;
 
-    TreeDropTarget dt;
+    private JPopupMenu popup;
+    private TreePath selectionPath;
 
     private static int window_count = 0;
     private static WindowListener window_listener = new WindowAdapter() {
@@ -184,11 +192,66 @@ public class STMultipleView extends JFrame implements PropertyChangeListener {
         if (stPanel2 != null)
             stPanel2.removePropertyChangeListener(this);
         jTree = new JTree(tree);
-        ds = new TreeDragSource(jTree, DnDConstants.ACTION_MOVE);
+        TreeDragSource ds = new TreeDragSource(jTree, DnDConstants.ACTION_MOVE);
 
-        dt = new TreeDropTarget(jTree);
+        TreeDropTarget dt = new TreeDropTarget(jTree);
        
-        jTree.addPropertyChangeListener(this);
+        //jTree.setEditable(true);
+        
+        popup = new JPopupMenu();
+        JMenuItem item = new JMenuItem("Add Node");
+        item.addActionListener(this);
+        item.setActionCommand("insert");
+        JMenuItem item2 = new JMenuItem("Remove Node");
+        item2.addActionListener(this);
+        item2.setActionCommand("remove");
+        popup.add(item);
+        popup.add(item2);
+        selectionPath = null;
+        
+        MouseListener ml = new MouseAdapter() {
+
+        
+            public void mousePressed(MouseEvent e) {
+            	
+                int selRow = jTree.getRowForLocation(e.getX(), e.getY());
+                selectionPath = jTree.getPathForLocation(e.getX(), e.getY());
+                if(selRow != -1) {
+                    if(e.getButton() == MouseEvent.BUTTON3){
+                    	
+                    	popup.show( (JComponent)e.getSource(), e.getX(), e.getY() );
+                        
+                    }
+                }
+            }
+
+        };
+        
+        jTree.addMouseListener(ml);
+   
+  
+        jTree.addKeyListener(new KeyListener(){
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				System.out.println(arg0);
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				System.out.println(arg0);
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				System.out.println(arg0);
+			}});
+        
+        //jTree.addPropertyChangeListener(this);
 
         JSplitPane split_pane = 
             new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, stPanel1, new JScrollPane(jTree));
@@ -201,6 +264,43 @@ public class STMultipleView extends JFrame implements PropertyChangeListener {
         repaint();
           
         setupMenus();
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent event) {
+    	System.out.println(event.getActionCommand());
+    	StdTreeDataNode node = (StdTreeDataNode) selectionPath.getLastPathComponent();
+    	StdTreeDataModel model = (StdTreeDataModel)jTree.getModel();
+ 
+    	if (event.getActionCommand().equals("insert")){
+    		
+    	   StdTreeDataNode newNode = new StdTreeDataNode("Child");
+           
+           model.addChild(node, newNode);
+           TreeNode[] nodes = model.getPathToRoot(newNode); 
+           TreePath path = new TreePath(nodes); 
+           
+           jTree.scrollPathToVisible(path); 
+            
+           //select the newly added node 
+           jTree.setSelectionPath(path); 
+            
+           //Make the newly added node editable
+           jTree.setEditable(true);
+           jTree.startEditingAtPath(path); 
+           
+    	} 
+    	else {
+    		StdTreeDataNode parent = (StdTreeDataNode) node.getParent();
+    		model.removeNode(node);
+    
+    		
+    		TreeNode[] nodes = model.getPathToRoot(parent); 
+    		TreePath path = new TreePath(nodes); 
+    		jTree.scrollPathToVisible(path);
+    	}
+    	return;
+      
     }
 
     /** Splits or reorients the pane. */
@@ -524,8 +624,6 @@ class TreeDropTarget implements DropTargetListener {
 	        if (tr.isDataFlavorSupported(flavors[i])) {
 	          dtde.acceptDrop(dtde.getDropAction());
 	          Object p1 = (Object) tr.getTransferData(flavors[i]);
-	          //TreePath p = new TreePath((TreePath)p1);
-	          //System.out.println("Treepath "+ p.toString());
 	          String nodeText = (String) p1;
 	          StdTreeDataModel model = (StdTreeDataModel) tree.getModel();
 	          /*I don't know a better way to look up the node in the model. 
