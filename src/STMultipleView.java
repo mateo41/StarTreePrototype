@@ -8,9 +8,8 @@ import com.inxight.st.*;
 import com.inxight.st.io.stc.STCReader;
 
 import javax.swing.*;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.DefaultTreeModel;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -35,8 +34,6 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -196,7 +193,7 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
 
         TreeDropTarget dt = new TreeDropTarget(jTree);
        
-        //jTree.setEditable(true);
+        jTree.setEditable(true);
         
         popup = new JPopupMenu();
         JMenuItem item = new JMenuItem("Add Node");
@@ -228,31 +225,26 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
         };
         
         jTree.addMouseListener(ml);
-   
-  
-        jTree.addKeyListener(new KeyListener(){
+        jTree.getCellEditor().addCellEditorListener(new CellEditorListener(){
 
 			@Override
-			public void keyPressed(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				System.out.println(arg0);
+			public void editingCanceled(ChangeEvent arg0) {
 				
 			}
 
 			@Override
-			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				System.out.println(arg0);
-			}
-
-			@Override
-			public void keyTyped(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				System.out.println(arg0);
+			public void editingStopped(ChangeEvent arg0) {
+				
+				String nodeValue = (String) jTree.getCellEditor().getCellEditorValue();
+				
+				TreePath path = jTree.getSelectionPath();
+				StdTreeDataNode node = (StdTreeDataNode) path.getLastPathComponent();
+		        node.setText(nodeValue);
+		        ((StdTreeDataModel )jTree.getModel()).nodeStructureChanged((StdTreeDataNode)node);
+				
 			}});
+    
         
-        //jTree.addPropertyChangeListener(this);
-
         JSplitPane split_pane = 
             new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, stPanel1, new JScrollPane(jTree));
 
@@ -274,7 +266,7 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
  
     	if (event.getActionCommand().equals("insert")){
     		
-    	   StdTreeDataNode newNode = new StdTreeDataNode("Child");
+    	   final StdTreeDataNode newNode = new StdTreeDataNode("Child");
            
            model.addChild(node, newNode);
            TreeNode[] nodes = model.getPathToRoot(newNode); 
@@ -286,8 +278,8 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
            jTree.setSelectionPath(path); 
             
            //Make the newly added node editable
-           jTree.setEditable(true);
            jTree.startEditingAtPath(path); 
+         
            
     	} 
     	else {
@@ -626,16 +618,17 @@ class TreeDropTarget implements DropTargetListener {
 	          Object p1 = (Object) tr.getTransferData(flavors[i]);
 	          String nodeText = (String) p1;
 	          StdTreeDataModel model = (StdTreeDataModel) tree.getModel();
-	          /*I don't know a better way to look up the node in the model. 
-	           * So I must look at all nodes.
+	          
+	          /*The best way I know how to map the node text back to the
+	           * node is to do a linear search through the graph. A hashmap
+	           * would be helpful here.
 	           */
-	        
 	        StdTreeDataNode current_node = null;
 	  		Enumeration<StdTreeDataNode> iter =  model.getNodes();
 	  		current_node = iter.nextElement();
 	  		while (!current_node.getText().equals(nodeText)){
 	  			current_node = iter.nextElement();
-	  			System.out.println(current_node.toString());
+	  			
 	        }
 	          model.removeNode(current_node);
 	          model.insertChildAt(parent,current_node,0);
