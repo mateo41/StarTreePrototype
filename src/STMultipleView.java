@@ -60,7 +60,7 @@ import java.util.Enumeration;
  */
 public class STMultipleView extends JFrame implements ActionListener, PropertyChangeListener {
 
-    private JMenuItem miSplitVert, miSplitHoriz, miSplitJTree, miUnsplit;
+    private JMenuItem  miSplitJTree, miUnsplit;
     private Container main_pane;
     private Component st_pane;
     private STPanel2 stPanel1, stPanel2;
@@ -122,10 +122,10 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
 
         JMenu view_menu = new JMenu("View");
         view_menu.setMnemonic('V');
-        view_menu.add(miSplitHoriz = new JMenuItem("Split Horizontally", 'H'));
-        miSplitHoriz.addActionListener(new MethodCallAction(this, "splitHoriz"));
-        view_menu.add(miSplitVert = new JMenuItem("Split Vertically", 'V'));
-        miSplitVert.addActionListener(new MethodCallAction(this, "splitVert"));
+        //view_menu.add(miSplitHoriz = new JMenuItem("Split Horizontally", 'H'));
+        //miSplitHoriz.addActionListener(new MethodCallAction(this, "splitHoriz"));
+        //view_menu.add(miSplitVert = new JMenuItem("Split Vertically", 'V'));
+        //miSplitVert.addActionListener(new MethodCallAction(this, "splitVert"));
         view_menu.add(miSplitJTree = new JMenuItem("Split JTree", 'K'));
         miSplitJTree.addActionListener(new MethodCallAction(this, "splitJTree"));
         view_menu.add(miUnsplit = new JMenuItem("Unsplit", 'U'));
@@ -335,19 +335,9 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
 
     private void setupMenus() {
         if (st_pane instanceof JSplitPane) {
-            if (((JSplitPane) st_pane).getOrientation() 
-                                == JSplitPane.HORIZONTAL_SPLIT) {
-                miSplitHoriz.setEnabled(false);
-                miSplitVert.setEnabled(true);
-            } else {
-                miSplitHoriz.setEnabled(true);
-                miSplitVert.setEnabled(false);
-            }
-            miUnsplit.setEnabled(true);
+        	miUnsplit.setEnabled(true);
         } else {
-              miSplitHoriz.setEnabled(true);
-              miSplitVert.setEnabled(true);
-              miUnsplit.setEnabled(false);
+        	miUnsplit.setEnabled(false);
         }
     }
 
