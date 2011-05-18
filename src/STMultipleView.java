@@ -6,6 +6,7 @@
 
 import com.inxight.st.*;
 import com.inxight.st.io.stc.STCReader;
+import com.inxight.st.io.stc.STCWriter;
 
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
@@ -151,10 +152,18 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
         addWindowListener(window_listener);
     }
     public void load() {
-    	System.out.println("I don't know how to load");
+    	final JFileChooser fc = new JFileChooser();
+    	int returnVal = fc.showOpenDialog(this);
+    	if (returnVal == JFileChooser.APPROVE_OPTION) {
+             File file = fc.getSelectedFile();
+             String filename = file.getAbsolutePath();
+             StdGraphDataModel newTree = new StdGraphDataModel();
+             loadData(filename, newTree);
+             tree = newTree;
+             star1.setTree(tree);
+    	}
     }
     public void save(){
-    	System.out.println("I don't know how to save");
     	final JFileChooser fc = new JFileChooser();
     	int returnVal = fc.showOpenDialog(this);
     	if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -163,7 +172,8 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
 			 try {
 				String pathName = file.getAbsolutePath();
 				FileWriter fw = new FileWriter(pathName);
-				fw.write("Hi");
+				STCWriter  starTreeWriter = new STCWriter();
+				starTreeWriter.writeTree(fw, tree, null);
 				fw.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
