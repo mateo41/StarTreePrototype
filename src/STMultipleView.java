@@ -42,6 +42,10 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Enumeration;
 
@@ -110,6 +114,10 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
 
         JMenu file_menu = new JMenu("File");
         file_menu.setMnemonic('F');
+        file_menu.add(item = new JMenuItem("Load Data", 'I'));
+        item.addActionListener(new MethodCallAction(this, "load"));
+        file_menu.add(item = new JMenuItem("Save", 'S'));
+        item.addActionListener(new MethodCallAction(this, "save"));
         file_menu.add(item = new JMenuItem("Exit", 'X'));
         item.addActionListener(new MethodCallAction(this, "exit"));
         menu_bar.add(file_menu);
@@ -122,10 +130,6 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
 
         JMenu view_menu = new JMenu("View");
         view_menu.setMnemonic('V');
-        //view_menu.add(miSplitHoriz = new JMenuItem("Split Horizontally", 'H'));
-        //miSplitHoriz.addActionListener(new MethodCallAction(this, "splitHoriz"));
-        //view_menu.add(miSplitVert = new JMenuItem("Split Vertically", 'V'));
-        //miSplitVert.addActionListener(new MethodCallAction(this, "splitVert"));
         view_menu.add(miSplitJTree = new JMenuItem("Split JTree", 'K'));
         miSplitJTree.addActionListener(new MethodCallAction(this, "splitJTree"));
         view_menu.add(miUnsplit = new JMenuItem("Unsplit", 'U'));
@@ -146,7 +150,29 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
         window_count++;
         addWindowListener(window_listener);
     }
+    public void load() {
+    	System.out.println("I don't know how to load");
+    }
+    public void save(){
+    	System.out.println("I don't know how to save");
+    	final JFileChooser fc = new JFileChooser();
+    	int returnVal = fc.showOpenDialog(this);
+    	if (returnVal == JFileChooser.APPROVE_OPTION) {
+             File file = fc.getSelectedFile();
+            
+			 try {
+				String pathName = file.getAbsolutePath();
+				FileWriter fw = new FileWriter(pathName);
+				fw.write("Hi");
+				fw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
+    	}
+        
+    }
     /** A MethodCallAction invoked from the menu. */
     public void exit() {
         setVisible(false);
