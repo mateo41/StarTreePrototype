@@ -5,6 +5,7 @@
  */
 
 
+
 import com.inxight.st.*;
 import com.inxight.st.io.stc.STCReader;
 
@@ -14,7 +15,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import java.awt.*;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Point;
+import java.awt.Window;
+
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -44,11 +51,40 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Enumeration;
+
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+
+import com.inxight.st.GraphDataNode;
+import com.inxight.st.Link;
+import com.inxight.st.STLicenseException;
+import com.inxight.st.STPanel2;
+import com.inxight.st.StarTree;
+import com.inxight.st.StdGraphDataModel;
+import com.inxight.st.StdPainter;
+import com.inxight.st.StdTreeDataModel;
+import com.inxight.st.StdTreeDataNode;
+import com.inxight.st.TreeDataModel;
+import com.inxight.st.TreeDataNode;
+import com.inxight.st.io.stc.STCReader;
+import com.inxight.st.io.stc.STCWriter;
 
 /**
  * The STMultipleView is a demonstration application that will display a default 
@@ -152,10 +188,18 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
         addWindowListener(window_listener);
     }
     public void load() {
-    	System.out.println("I don't know how to load");
+    	final JFileChooser fc = new JFileChooser();
+    	int returnVal = fc.showOpenDialog(this);
+    	if (returnVal == JFileChooser.APPROVE_OPTION) {
+             File file = fc.getSelectedFile();
+             String filename = file.getAbsolutePath();
+             StdGraphDataModel newTree = new StdGraphDataModel();
+             loadData(filename, newTree);
+             tree = newTree;
+             star1.setTree(tree);
+    	}
     }
     public void save(){
-    	System.out.println("I don't know how to save");
     	final JFileChooser fc = new JFileChooser();
     	int returnVal = fc.showOpenDialog(this);
     	if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -164,7 +208,8 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
 			 try {
 				String pathName = file.getAbsolutePath();
 				FileWriter fw = new FileWriter(pathName);
-				fw.write("Hi");
+				STCWriter  starTreeWriter = new STCWriter();
+				starTreeWriter.writeTree(fw, tree, null);
 				fw.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
