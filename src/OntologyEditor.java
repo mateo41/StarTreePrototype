@@ -4,6 +4,7 @@
  * Copyright (c) 2001-2005 Inxight Software, Inc.  All rights reserved.
  */
 
+
 import com.inxight.st.*;
 import com.inxight.st.io.stc.STCReader;
 
@@ -62,7 +63,7 @@ import java.util.Enumeration;
  * menu.  This can be done either within the existing window, or in a new
  * window, demonstrating another way multiple views can be created.
  */
-public class STMultipleView extends JFrame implements ActionListener, PropertyChangeListener {
+public class OntologyEditor extends JFrame implements ActionListener, PropertyChangeListener {
 
     private JMenuItem  miSplitJTree, miUnsplit;
     private Container main_pane;
@@ -91,7 +92,7 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
      * Constructs a StarTree Multiple View demonstration of the specified
      * tree.
      */
-    public STMultipleView(TreeDataModel tree) {
+    public OntologyEditor(TreeDataModel tree) {
         super("StarTree(R) Multiple View Demo");
 
         main_pane = getContentPane();
@@ -420,7 +421,7 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
                 else
                     new_tree = new StdTreeDataModel((TreeDataNode) node);
                 if (useNewWindow) {
-                    JFrame new_frame = new STMultipleView(new_tree);
+                    JFrame new_frame = new OntologyEditor(new_tree);
                     new_frame.setVisible(true);
                 } else {
                     star.setTree(new_tree);
@@ -472,7 +473,7 @@ public class STMultipleView extends JFrame implements ActionListener, PropertyCh
         
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                STMultipleView demo = new STMultipleView(tree);
+                OntologyEditor demo = new OntologyEditor(tree);
                 demo.setVisible(true);
 
                 if (tree == null)
