@@ -6,22 +6,11 @@
 
 
 
-import com.inxight.st.*;
-import com.inxight.st.io.stc.STCReader;
-
-import javax.swing.*;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Point;
 import java.awt.Window;
-
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
