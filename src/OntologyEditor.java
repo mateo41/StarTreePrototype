@@ -141,25 +141,25 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
         JMenu file_menu = new JMenu("File");
         file_menu.setMnemonic('F');
         file_menu.add(item = new JMenuItem("Load Data", 'I'));
-        item.addActionListener(new MethodCallAction(this, "load"));
+        item.addActionListener(this);
         file_menu.add(item = new JMenuItem("Save", 'S'));
-        item.addActionListener(new MethodCallAction(this, "save"));
+        item.addActionListener(this);
         file_menu.add(item = new JMenuItem("Exit", 'X'));
-        item.addActionListener(new MethodCallAction(this, "exit"));
+        item.addActionListener(this);
         menu_bar.add(file_menu);
 
         JMenu edit_menu = new JMenu("Edit");
         edit_menu.setMnemonic('E');
         edit_menu.add(item = new JMenuItem("Reset Tree", 'R'));
-        item.addActionListener(new MethodCallAction(this, "reset"));
+        item.addActionListener(this);
         menu_bar.add(edit_menu);
 
         JMenu view_menu = new JMenu("View");
         view_menu.setMnemonic('V');
         view_menu.add(miSplitJTree = new JMenuItem("Split JTree", 'K'));
-        miSplitJTree.addActionListener(new MethodCallAction(this, "splitJTree"));
+        miSplitJTree.addActionListener(this);
         view_menu.add(miUnsplit = new JMenuItem("Unsplit", 'U'));
-        miUnsplit.addActionListener(new MethodCallAction(this, "unsplit"));
+        miUnsplit.addActionListener(this);
         menu_bar.add(view_menu);
 
         setJMenuBar(menu_bar);
@@ -208,6 +208,11 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
     	}
         
     }
+    
+    /*All of the MethodCallActions are dispatched from the 
+     * actionPerformed method. This allowed me to remove the 
+     * STMulipleView.jar from the project. 
+     */
     /** A MethodCallAction invoked from the menu. */
     public void exit() {
         setVisible(false);
@@ -234,15 +239,7 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
         setupMenus();
     }
 
-    /** A MethodCallAction invoked from the menu. */
-    public void splitHoriz() {
-        split(JSplitPane.HORIZONTAL_SPLIT);
-    }
 
-    /** A MethodCallAction invoked from the menu. */
-    public void splitVert() {
-        split(JSplitPane.VERTICAL_SPLIT);
-    }
     
     /** A MethodCallAction invoked from the menu. */
     public void splitJTree() {
@@ -319,14 +316,45 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
         setupMenus();
     }
     
+    /*There are 8 events that are handled in this method.
+     * The Events are Exit, Load Data, Save, Reset Tree, Split JTree, Unsplit,
+     * insert(Node), remove(Node)
+     * A better design would be to separate the Node Action events from the Menu Events.
+     * I think this could be done with anonymous ActionListener classes.
+     * The current choice is done for expedience. 
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
     @Override
     public void actionPerformed(ActionEvent event) {
     	System.out.println(event.getActionCommand());
-    	StdTreeDataNode node = (StdTreeDataNode) selectionPath.getLastPathComponent();
-    	StdTreeDataModel model = (StdTreeDataModel)jTree.getModel();
- 
+    	if (event.getActionCommand().equals("Exit")){
+    		this.exit();
+    	}
+    	
+    	if (event.getActionCommand().equals("Load Data")){
+    		this.load();
+    	}
+    	
+    	if (event.getActionCommand().equals("Save"))
+    	{
+    		this.save();
+    	}
+    	
+    	if (event.getActionCommand().equals("Reset Tree")){
+    		this.reset();
+    	}
+    	
+    	if (event.getActionCommand().equals("Split JTree"))
+    	{
+    		this.splitJTree();
+    	}
+    	
+    	if (event.getActionCommand().equals("Unsplit")){
+    		this.unsplit();
+    	}
     	if (event.getActionCommand().equals("insert")){
-    		
+    		StdTreeDataNode node = (StdTreeDataNode) selectionPath.getLastPathComponent();
+        	StdTreeDataModel model = (StdTreeDataModel)jTree.getModel(); 
     	   final StdTreeDataNode newNode = new StdTreeDataNode("Child");
            
            model.addChild(node, newNode);
@@ -343,7 +371,11 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
          
            
     	} 
-    	else {
+    	
+    	if (event.getActionCommand().equals("remove"))
+    	{
+    		StdTreeDataNode node = (StdTreeDataNode) selectionPath.getLastPathComponent();
+        	StdTreeDataModel model = (StdTreeDataModel)jTree.getModel();
     		StdTreeDataNode parent = (StdTreeDataNode) node.getParent();
     		model.removeNode(node);
     
@@ -421,7 +453,7 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
      * A subclass of STPanel2 that includes a popupmenu for viewing 
      * subtrees.
      */
-    private static class STMultipleViewPanel extends STPanel2 {
+    private static class STMultipleViewPanel extends STPanel2 implements ActionListener{
 
         private StarTree star;
 
@@ -434,11 +466,11 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
             JPopupMenu popup = new JPopupMenu();
             JMenuItem item;
             popup.add(item = new JMenuItem("View Subtree"));
-            item.addActionListener(
-                new MethodCallAction(STMultipleViewPanel.this, "viewSubtree"));
+            
+            item.addActionListener(this);
             popup.add(item = new JMenuItem("View Subtree in New Window"));
-            item.addActionListener(new MethodCallAction(
-                    STMultipleViewPanel.this, "viewNewSubtree"));
+            item.addActionListener(this);
+            
             setNodePopup(popup);
             
  
@@ -471,6 +503,18 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
         public void viewNewSubtree() {
             viewSubtree(true);
         }
+
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			if (event.getActionCommand().equals("View Subtree")){
+				this.viewSubtree();
+			}
+			
+			if (event.getActionCommand().equals("View Subtree in New Window"))
+			{
+				this.viewNewSubtree();
+			}
+		}
     }
 
    
