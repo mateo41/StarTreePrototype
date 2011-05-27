@@ -42,6 +42,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Enumeration;
 
 import javax.swing.JComponent;
@@ -181,9 +183,17 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
     	int returnVal = fc.showOpenDialog(this);
     	if (returnVal == JFileChooser.APPROVE_OPTION) {
              File file = fc.getSelectedFile();
-             String filename = file.getAbsolutePath();
+             URL file_url = null;
+			try {
+				file_url = file.toURI().toURL();
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			}
+
              StdGraphDataModel newTree = new StdGraphDataModel();
-             loadData(filename, newTree);
+             loadData(file_url, newTree);
              tree = newTree;
              star1.setTree(tree);
     	}
@@ -435,12 +445,13 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
     }
 
     private void addLicense(StarTree star) {
-        String base_dir = System.getProperty("user.dir");
-        try {
+        //String base_dir = System.getProperty("user.dir");
+    	ClassLoader loader = OntologyEditor.class.getClassLoader();
+    	URL license = loader.getResource("res/license/license.dat");
+    	URL company = loader.getResource("res/license/company.dat");
+    	try {
         	
-            star.setLicense(null,
-                    base_dir + "/res/license/license.dat",
-                    base_dir + "/res/license/company.dat");
+            star.setLicense(null,license, company);
         } catch (STLicenseException e) {
             setMessage("Invalid license.");
         }
@@ -520,7 +531,7 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
    
 
 	/** Loads STC data into the STMultipleView. */
-    public static TreeDataModel loadData(String filename, TreeDataModel model1) {
+    public static TreeDataModel loadData(URL filename, TreeDataModel model1) {
         STCReader reader = new STCReader();
         try {
             return reader.readTree(filename, (StdTreeDataModel) model1, null);
@@ -534,15 +545,13 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
      * use the orgchart.stc sample data.
      */
     public static void main(String[] args) {
-        final String filename;
 
-        if (args.length < 1 || args[0] == null || args[0].length() == 0)
-        	
-            //filename = "./res/orgchart.stc";
-        	filename = "./res/cuahsitree.stc";
-        else
-            filename = args[0];
         StdTreeDataModel model1 = new StdTreeDataModel();
+        final URL filename;
+
+        ClassLoader loader = OntologyEditor.class.getClassLoader();
+        filename = loader.getResource("res/cuahsitree.stc");
+        
         final TreeDataModel tree = loadData(filename, model1);
 
         
@@ -555,7 +564,7 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
                 demo.setVisible(true);
 
                 if (tree == null)
-                    demo.setMessage("Cannot open " + filename + ".");
+                    demo.setMessage("Cannot open " + filename.toString() + ".");
             }
         }); 
     }
