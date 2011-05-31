@@ -445,7 +445,7 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
     }
 
     private void addLicense(StarTree star) {
-        //String base_dir = System.getProperty("user.dir");
+
     	ClassLoader loader = OntologyEditor.class.getClassLoader();
     	URL license = loader.getResource("res/license/license.dat");
     	URL company = loader.getResource("res/license/company.dat");
@@ -476,9 +476,7 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
                 StdPainter.STYLE_DUPLICATION, true);
             JPopupMenu popup = new JPopupMenu();
             JMenuItem item;
-            popup.add(item = new JMenuItem("View Subtree"));
-            
-            item.addActionListener(this);
+
             popup.add(item = new JMenuItem("View Subtree in New Window"));
             item.addActionListener(this);
             
@@ -488,8 +486,15 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
             
         }
 
+        
         public void viewSubtree(boolean useNewWindow) {
-            Link link = getPopupNode();
+            /* 
+             * The variable useNewWindow will always be true. 
+             * We always open a new Window when we create a subtree,
+             * because it creates a new model, so the JTree is properly
+             * synchronized.
+             */
+        	Link link = getPopupNode();
             if (link != null) {
                 Object node = link.getLinkChild();
                 TreeDataModel new_tree;
@@ -506,10 +511,7 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
                 }
             }
         }
-
-        public void viewSubtree() {
-            viewSubtree(false);
-        }
+		
 
         public void viewNewSubtree() {
             viewSubtree(true);
@@ -517,9 +519,7 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			if (event.getActionCommand().equals("View Subtree")){
-				this.viewSubtree();
-			}
+
 			
 			if (event.getActionCommand().equals("View Subtree in New Window"))
 			{
