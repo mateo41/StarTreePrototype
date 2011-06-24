@@ -2,7 +2,7 @@ package org.sdsc.spatial.ontology;
 /* This is a java swing application that uses a inxight Startree with a JTree to manipulate 
 * a hierarchical ontology. The example inxight program that uses a StarTree and JTree was 
 * used to develop this application. It was customized and given drag and drop capability, as 
-* well as the ability to import and export ontologies.  
+* well as the ability to add and remove nodes.  
 *
 */
 
@@ -122,7 +122,7 @@ public class OntologyEditor extends JFrame implements ActionListener, PropertyCh
      * tree.
      */
     public OntologyEditor(TreeDataModel tree) {
-        super("StarTree(R) Multiple View Demo");
+        super("Ontology Editor");
 
         main_pane = getContentPane();
         main_pane.setLayout(new BorderLayout());
